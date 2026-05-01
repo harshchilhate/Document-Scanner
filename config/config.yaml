@@ -1,0 +1,14 @@
+gaussian:
+  kernel_size: 5
+
+canny:
+  threshold1: 30
+  threshold2: 150
+
+contour:
+  min_area_ratio: 0.30
+
+output:
+  image_format: ".png"
+  prefix: "processed_"
+  
