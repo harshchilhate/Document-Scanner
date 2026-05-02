@@ -56,11 +56,20 @@ def preprocess_image(image, config):
         logger.error(f"Preprocessing failed : {e}")
         return None
 
-   
 
 # 4. detect_edges(image, config)
 #    - apply cv2.Canny using thresholds from config
 #    - return edge map
+def detect_edges(blurred_gray_image, config):
+    try:
+        threshold1 = config["canny"]["threshold1"]
+        threshold2 = config["canny"]["threshold2"]
+        edges = cv2.Canny(blurred_gray_image, threshold1, threshold2)
+        return edges
+    except Exception as e:
+        logger.error(f"Edge detection failed: {e}")
+        return None
+
 
 # 5. find_document_contour(edges, image, config)
 #    - cv2.findContours
