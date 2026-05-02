@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import cv2
-import yaml
 import numpy as np
 import logging
 
