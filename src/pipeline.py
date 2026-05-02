@@ -77,6 +77,41 @@ def detect_edges(blurred_gray_image, config):
 #    - keep only 4-point polygons
 #    - filter by min_area_ratio from config
 #    - return largest valid contour
+def find_document_contour(edges, image, config):
+    try:
+        min_area_ratio = config["contour"]["min_area_ratio"]
+        image_area = image.shape[0] * image.shape[1]
+        
+        contours, _ = cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        if not contours:
+            logger.error("No contours found in image")
+            return None
+        
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+        for contour in contours:
+            # 1. Calculate the area
+            area = cv2.contourArea(contour)
+            if area < min_area_ratio * image_area:
+                continue
+
+            # 2. Derive epsilon from area
+            epsilon = 0.02 * cv2.arcLength(contour, True)
+
+            # 3. Apply the approximation
+            approx = cv2.approxPolyDP(contour, epsilon, True)
+
+            if  len(approx) ==4 :
+                return approx
+        logger.error("No valid document contour found")
+        return None
+    
+    except Exception as e:
+        logger.error(f"Contour detection faild : {e}")
+        return None
+
+
 
 # 6. order_points(contour)
 #    - sort corners into TL, TR, BR, BL order
