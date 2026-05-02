@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import cv2
 import yaml
 import numpy as np
@@ -185,8 +186,8 @@ def transform_perspective(image, ordered):
 def postprocess_image(image):
     try:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        cleaned_image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 3)
-        return cleaned_image
+        final_image = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 3)
+        return final_image
     except Exception as e:
         logger.error(f"Postprocessing failed: {e}")
         return None
