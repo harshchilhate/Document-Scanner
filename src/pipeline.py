@@ -138,12 +138,46 @@ def order_points(contour):
         return None
 
 
-
 # 7. transform_perspective(image, ordered_points)
 #    - compute output dimensions
 #    - cv2.getPerspectiveTransform
 #    - cv2.warpPerspective
 #    - return warped image
+def transform_perspective(image, ordered):
+    try:
+        TL = ordered[0]
+        TR = ordered[1]
+        BR = ordered[2]
+        BL = ordered[3]
+
+        # compute width
+        width1 = np.sqrt(((BR[0] - BL[0]) ** 2) + ((BR[1] - BL[1]) ** 2))
+        width2 = np.sqrt(((TR[0] - TL[0]) ** 2) + ((TR[1] - TL[1]) ** 2))
+        width = int(max(width1, width2))
+
+        # compute height
+        height1 = np.sqrt(((TR[0] - BR[0]) ** 2) + ((TR[1] - BR[1]) ** 2))
+        height2 = np.sqrt(((TL[0] - BL[0]) ** 2) + ((TL[1] - BL[1]) ** 2))
+        height = int(max(height1, height2))
+
+        # source and destination points
+        source = np.array([TL, TR, BR, BL], dtype="float32")
+        destination = np.array([
+            [0, 0],
+            [width, 0],
+            [width, height],
+            [0, height]
+        ], dtype="float32")
+
+        # apply transform
+        matrix = cv2.getPerspectiveTransform(source, destination)
+        warped = cv2.warpPerspective(image, matrix, (width, height))
+
+        return warped
+    except Exception as e:
+        logger.error(f"Perspective transform failed: {e}")
+        return None
+
 
 # 8. postprocess_image(image)
 #    - cv2.adaptiveThreshold
