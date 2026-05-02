@@ -182,6 +182,15 @@ def transform_perspective(image, ordered):
 # 8. postprocess_image(image)
 #    - cv2.adaptiveThreshold
 #    - return cleaned image
+def postprocess_image(image):
+    try:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        cleaned_image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 3)
+        return cleaned_image
+    except Exception as e:
+        logger.error(f"Postprocessing failed: {e}")
+        return None
+
 
 # 9. save_image(image, input_path, config)
 #    - build output filename using prefix from config
