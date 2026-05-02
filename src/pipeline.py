@@ -197,3 +197,15 @@ def postprocess_image(image):
 #    - build output filename using prefix from config
 #    - save to OUTPUT_PATH from .env
 #    - log success message
+def save_image(final_image, file_name, save_path, config):
+    try:
+        prefix = config["output"]["prefix"]
+        image_format = config["output"]["image_format"]
+
+        output_filename = prefix + file_name + image_format
+        output_path = os.path.join(save_path, output_filename)
+
+        cv2.imwrite(output_path, final_image)
+        logger.info(f"Image saved successfully at: {output_path}")
+    except Exception as e:
+        logger.error(f"Saving image failed: {e}")
