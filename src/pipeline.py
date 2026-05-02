@@ -1,6 +1,7 @@
 import os
 import cv2
 import yaml
+import numpy as np
 import logging
 
 logger = logging.getLogger(__name__)
@@ -112,10 +113,31 @@ def find_document_contour(edges, image, config):
         return None
 
 
-
 # 6. order_points(contour)
 #    - sort corners into TL, TR, BR, BL order
 #    - return ordered array of 4 points
+def order_points(contour):
+    try:
+        points = contour.reshape(4, 2).astype("float32")
+        ordered = np.zeros((4, 2), dtype="float32")
+
+        sums = []
+        diffs = []
+        for point in points:
+            sums.append(point[0] + point[1])   # x + y
+            diffs.append(point[0] - point[1])  # x - y
+
+        ordered[0] = points[sums.index(min(sums))]   # TL → smallest sum
+        ordered[2] = points[sums.index(max(sums))]   # BR → largest sum
+        ordered[1] = points[diffs.index(min(diffs))] # TR → smallest diff
+        ordered[3] = points[diffs.index(max(diffs))] # BL → largest diff
+
+        return ordered
+    except Exception as e:
+        logger.error(f"Ordering points failed: {e}")
+        return None
+
+
 
 # 7. transform_perspective(image, ordered_points)
 #    - compute output dimensions
