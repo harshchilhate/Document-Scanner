@@ -1,5 +1,6 @@
 import os
 import cv2
+import yaml
 import logging
 
 logger = logging.getLogger(__name__)
@@ -45,6 +46,17 @@ def validate_image(image, file_path):
 #    - convert to grayscale with cvtColor
 #    - apply GaussianBlur using kernel size from config
 #    - return processed image
+def preprocess_image(image, config):
+    try:
+        kernel_size = config["gaussian"]["kernel_size"]
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred_gray_image = cv2.GaussianBlur(gray_image, (kernel_size, kernel_size), 0)
+        return blurred_gray_image
+    except Exception as e:
+        logger.error(f"Preprocessing failed : {e}")
+        return None
+
+   
 
 # 4. detect_edges(image, config)
 #    - apply cv2.Canny using thresholds from config
