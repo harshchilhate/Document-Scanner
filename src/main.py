@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import argparse
 import yaml
 import logging
+import numpy as np
+import cv2
 from pipeline import (
     load_image,
     validate_image,
@@ -80,12 +82,22 @@ def main():
         exit(1)
 
     ordered = order_points(contour)
+    (tl, tr, br, bl) = ordered
+    if tl[1] > bl[1]:  
+        ordered = np.array([bl, br, tr, tl])
     if ordered is None:
         exit(1)
+
 
     warped = transform_perspective(original, ordered)
     if warped is None:
         exit(1)
+
+    h, w = warped.shape[:2]
+    if h < w:
+        warped = cv2.rotate(warped, cv2.ROTATE_90_CLOCKWISE)
+
+    warped = cv2.flip(warped, 1)
 
     cleaned = postprocess_image(warped)
     if cleaned is None:

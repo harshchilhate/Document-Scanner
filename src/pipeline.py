@@ -66,6 +66,8 @@ def detect_edges(blurred_gray_image, config):
         threshold1 = config["canny"]["threshold1"]
         threshold2 = config["canny"]["threshold2"]
         edges = cv2.Canny(blurred_gray_image, threshold1, threshold2)
+        kernel = np.ones((5, 5), np.uint8)
+        edges = cv2.dilate(edges, kernel, iterations=1)
         return edges
     except Exception as e:
         logger.error(f"Edge detection failed: {e}")
@@ -98,13 +100,15 @@ def find_document_contour(edges, image, config):
                 continue
 
             # 2. Derive epsilon from area
-            epsilon = 0.02 * cv2.arcLength(contour, True)
+            for epsilon_factor in [0.02, 0.04, 0.06, 0.08, 0.10]:
+                epsilon = epsilon_factor * cv2.arcLength(contour, True)
 
-            # 3. Apply the approximation
-            approx = cv2.approxPolyDP(contour, epsilon, True)
+                # 3. Apply the approximation
+                approx = cv2.approxPolyDP(contour, epsilon, True)
 
-            if  len(approx) ==4 :
-                return approx
+                if  len(approx) ==4 :
+                    return approx
+                
         logger.error("No valid document contour found")
         return None
     
