@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import argparse
 import yaml
 import logging
-from src.pipeline import (
+from pipeline import (
     load_image,
     validate_image,
     preprocess_image,
