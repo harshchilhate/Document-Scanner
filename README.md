@@ -165,6 +165,7 @@ Adjust these values if the pipeline struggles with your specific images.
 
 ## Project Structure
 
+```
 Document-Scanner/
 ├── src/
 │   ├── main.py          ← entry point, pipeline orchestration
@@ -179,7 +180,7 @@ Document-Scanner/
 ├── .env.example         ← path configuration template
 ├── requirements.txt
 └── README.md
-
+```
 ---
 
 ## Tech Stack
