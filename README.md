@@ -54,6 +54,7 @@ being committed. No code was blindly copy-pasted without comprehension.
 
 ## How It Works
 
+```
 Input Image
 ↓
 Grayscale + Gaussian Blur     (noise reduction)
@@ -75,7 +76,7 @@ Orientation Fix               (rotation + flip correction)
 Adaptive Thresholding         (clean scan appearance)
 ↓
 Save Output as PNG
-
+```
 ---
 
 ## Works Best With
